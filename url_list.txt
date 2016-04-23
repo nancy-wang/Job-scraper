@@ -1,0 +1,8 @@
+http://www.indeed.com/jobs?q=python&l=94104
+http://www.indeed.com/jobs?q=linux&l=94104
+http://www.indeed.com/jobs?q=windows+server&l=94104
+http://www.indeed.com/jobs?q=cloud&l=94104
+http://www.indeed.com/jobs?q=perl&l=94104
+http://www.indeed.com/jobs?q=cisco&l=94952
+http://www.indeed.com/jobs?q=data+entry&l=94104
+http://www.indeed.com/jobs?q=java&l=94104
