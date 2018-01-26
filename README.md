@@ -1,15 +1,10 @@
-# Web-Scraper-in-Python-with-BeautifulSoup
-This is a web scraper/crawler which grabs all of the current jobs from indeed, based on search urls.  This will 'click' on the Next button until there are no more jobs to grab.  This utilizes the BeautifulSoup4 3rd party package.
+# Job-scaper-Health-Leads
+Note: This code was adapted from: https://github.com/Futvin/Web-Scraper-in-Python-with-BeautifulSoup. 
+This is a web scraper/crawler which grabs all of the current jobs from Indeed, based on search urls.  This will 'click' on the Next button until there are no more jobs to grab.  This utilizes the BeautifulSoup4 3rd party package.
 
 Usage
 --------------
-The url_list which is including searches for various jobs in the financial district of San Francisco.  In most cases, there are 100 pages for this script to crawl through, collecting data.  The script will not print anything to standard out, unless some level of verbosity is defined.
-
-`.\runIndeedJobScrap.py -v`
-
-I included an additional file which will scrap one page, and print the results.  This file is for development purposes.
-
-`.\runSimpleScrap.py`
+Currently must compile .py file to run the job search. 
 
 
 Dependances
