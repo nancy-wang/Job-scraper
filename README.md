@@ -8,7 +8,7 @@ Usage
 Currently must compile and run .py file to perform the job search. 
 
 
-Dependances
+Dependencies
 --------------
 Python 3.5: These scripts were developed against Python 3.6.
 
