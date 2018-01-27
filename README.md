@@ -1,4 +1,5 @@
-# Job scaper project for Health Leads
+# Job scraper project for Health Leads
+
 Note: I am immensely grateful for and indebted to Futvin, whose webscraping code I used as the foundation for my project: https://github.com/Futvin/Web-Scraper-in-Python-with-BeautifulSoup. Many thanks!
 
 Health Leads is a nonprofit, student-led organization that works with low-income individuals of the Baltimore community to address social determinants of health. As an Employment Specialist at Health Leads, finding relevant jobs for my clients often consumes a large portion of the time. While I created this webscraper in hopes of making the job search more efficient and comprehensive for my clients, it has been designed for individuals of any background to use. This current version scrapes job information, comprising of the job's name, location, company, and application link, and prints it out to a Word document. 
