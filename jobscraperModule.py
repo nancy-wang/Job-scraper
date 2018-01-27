@@ -4,13 +4,21 @@ import re
 import urllib.request
 from bs4 import BeautifulSoup
 from docx import Document
+from docx.shared import Pt
 
 document = Document()
-document.add_heading('Job Listings', 0)
+
+style = document.styles['Normal']
+font = style.font
+font.name = 'Garamond'
+font.size = Pt(12)
+#new_heading_style = document.styles['Heading 1']
+#font_heading = new_heading_style.font
+#font_heading.name = 'Garamond'
+#font_heading.size = Pt(24)
+document.add_heading('Job Listings', 1)
 
 def crawler_func(url):
-
-	#file = open("job_listings.txt", "w")
 
 	with urllib.request.urlopen(url) as urldata:
 		rawtext = urldata.read().decode('utf-8', 'ignore')
@@ -31,30 +39,19 @@ def crawler_func(url):
    					jobURL = "https://www.indeed.com" + link['href']
    			except:
    				pass
-		print("-----")
+
 		try:
-   			print(jobTitle)
-   			print(companyName)
-   			print(jobLocation)
-   			print(jobURL)
    			
-   			document.add_paragraph(jobTitle)
+   			p = document.add_paragraph()
+   			p.add_run(jobTitle).bold = True
    			document.add_paragraph(companyName)
    			document.add_paragraph(jobLocation)
    			document.add_paragraph(jobURL)
-   			#file.write(jobTitle)
-   			#file.write("\n")
-   			#file.write(companyName)
-   			#file.write("\n")
-   			#file.write(jobLocation)
-   			#file.write("\n")
-   			#file.write(jobURL)
-   			#file.write("\n")
-   			#file.write("\n")
+   			document.add_paragraph()
+   			
 		except:
    			pass
 		document.save('job_listings.docx')
-		print("\n\n")
 	#hard coding a way to only read two pages worth of data, LOL
 	#if (count <= 1):
 	#	try:
@@ -90,11 +87,12 @@ def menu():
 	if (sortdate=='y'):
 		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius=" + str(radius) + "&sort=date"
 	else: 
-		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius="
+		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius=" + str(radius)
 	#count = 1
 	print("Thanks! Starting search now...")
 	print(url)
 	crawler_func(url)
+	print("Jobs written to Word document. Thanks for using this service!")
 
 menu()
 
