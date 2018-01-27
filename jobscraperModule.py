@@ -3,16 +3,21 @@
 import re
 import urllib.request
 from bs4 import BeautifulSoup
+from docx import Document
 
+document = Document()
+document.add_heading('Job Listings', 0)
 
-def crawler_func(url, count):
+def crawler_func(url):
+
+	#file = open("job_listings.txt", "w")
+
 	with urllib.request.urlopen(url) as urldata:
 		rawtext = urldata.read().decode('utf-8', 'ignore')
 		soup = BeautifulSoup(rawtext, 'html.parser')
 
 	jobListings = soup.select(".result")
 	for job in jobListings:
-		data = []
 		#Get job details
 		jobTitle= job.select(".jobtitle")[0].text.lstrip().rstrip()
 		companyName = job.select(".company")[0].text.lstrip().rstrip()
@@ -32,9 +37,23 @@ def crawler_func(url, count):
    			print(companyName)
    			print(jobLocation)
    			print(jobURL)
+   			
+   			document.add_paragraph(jobTitle)
+   			document.add_paragraph(companyName)
+   			document.add_paragraph(jobLocation)
+   			document.add_paragraph(jobURL)
+   			#file.write(jobTitle)
+   			#file.write("\n")
+   			#file.write(companyName)
+   			#file.write("\n")
+   			#file.write(jobLocation)
+   			#file.write("\n")
+   			#file.write(jobURL)
+   			#file.write("\n")
+   			#file.write("\n")
 		except:
-   			print("Couldn't get info for this job - sorry!")
-
+   			pass
+		document.save('job_listings.docx')
 		print("\n\n")
 	#hard coding a way to only read two pages worth of data, LOL
 	#if (count <= 1):
@@ -72,10 +91,10 @@ def menu():
 		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius=" + str(radius) + "&sort=date"
 	else: 
 		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius="
-	count = 1
+	#count = 1
 	print("Thanks! Starting search now...")
 	print(url)
-	crawler_func(url, count)
+	crawler_func(url)
 
 menu()
 
