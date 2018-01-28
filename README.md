@@ -14,6 +14,7 @@ Dependencies
 Python 3.5: These scripts were developed against Python 3.6.
 
 BeautifulSoup 4: You will need to install BeautifulSoup in order to run these libraries. This can be done through running "pip install beautifulsoup4" in the command line.
+
 Python-Docx: I also made use of the Python-Docx library to write job postings into a Word document. More information can be found here: https://python-docx.readthedocs.io/en/latest/user/install.html
 
 
