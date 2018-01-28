@@ -1,3 +1,4 @@
+
 #A web scraper to do job searches for Health Leads clients 
 #This code was adapted from https://github.com/Futvin/Web-Scraper-in-Python-with-BeautifulSoup/blob/master/runSimpleScrap.py
 import re
@@ -5,6 +6,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 from docx import Document
 from docx.shared import Pt
+
 
 document = Document()
 
@@ -18,8 +20,8 @@ font.size = Pt(12)
 #font_heading.size = Pt(24)
 document.add_heading('Job Listings', 1)
 
-def crawler_func(url, page):
-
+def crawler_func(url, page, jobsubj):
+	job_subj = jobsubj.replace("+", "")
 	with urllib.request.urlopen(url) as urldata:
 		rawtext = urldata.read().decode('utf-8', 'ignore')
 		soup = BeautifulSoup(rawtext, 'html.parser')
@@ -63,10 +65,10 @@ def crawler_func(url, page):
    			
 		except:
    			pass
-	document.save('job_listings.docx')
+	document.save('job_listings_' + str(job_subj) + '.docx')
 	
 	if (page < 10):
-		document.add_paragraph("Here are some other jobs you should consider:")
+		document.add_paragraph("If applicable, other jobs you might want to consider are linked below.")
 	relatedJobs = soup.select(".relatedQuerySpacing")
 	for related in relatedJobs:
 		all_related = related.find_all("a")
@@ -77,7 +79,7 @@ def crawler_func(url, page):
 				document.add_paragraph(relatedURL)
 			except:
 				pass
-	document.save('job_listings.docx')
+	document.save('job_listings_' + str(job_subj) + '.docx')
 	try:
 		next_link = soup.select(".pagination")[0].find_all('a')
 
@@ -85,7 +87,7 @@ def crawler_func(url, page):
    			if re.match("Next", link.text) is not None:
    				page += 10
    				print(link['href'])
-   				crawler_func("https://www.indeed.com" + link['href'],page)
+   				crawler_func("https://www.indeed.com" + link['href'],page, jobsubj)
 	except:
 		pass
 
@@ -94,19 +96,21 @@ def menu():
 	zipcode = input("Please input the zipcode of the job you are looking for.\nIf you don't know what zipcode you're looking for, enter 'N/A' and the default location will be set to Baltimore\n")
 	if (zipcode == "N/A"):
 		zipcode = 21218
-	job = input("Please input the type of job you're seeking.\nIf your input is more than one word, please separate spaces with + symbols, e.g. 'night+jobs'\n")
+	jobsubj = input("Please input the type of job you're seeking.\nIf your input is more than one word, please separate spaces with + symbols, e.g. 'night+jobs'\n")
 	radius = input("Please input how far you can travel.\n If no preference, input 25.\n")
 	sortdate = input("Type 'y' if you'd like to sort by date or 'n' if not. Otherwise jobs will be sorted by relevance.\n")
 	if (sortdate=='y'):
-		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius=" + str(radius) + "&sort=date"
+		url = "https://www.indeed.com/jobs?q=" + str(jobsubj) + "&l=" + str(zipcode) + "&radius=" + str(radius) + "&sort=date"
 	else: 
-		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius=" + str(radius)
+		url = "https://www.indeed.com/jobs?q=" + str(jobsubj) + "&l=" + str(zipcode) + "&radius=" + str(radius)
 	#count = 1
 	print("Thanks! Starting search now...")
 	print(url)
 	page = 0
-	crawler_func(url, page)
+	crawler_func(url, page, jobsubj)
 	print("Jobs written to Word document. Thanks for using this service!")
 
 menu()
+
+
 
