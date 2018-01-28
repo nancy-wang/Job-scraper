@@ -18,11 +18,12 @@ font.size = Pt(12)
 #font_heading.size = Pt(24)
 document.add_heading('Job Listings', 1)
 
-def crawler_func(url):
+def crawler_func(url, page):
 
 	with urllib.request.urlopen(url) as urldata:
 		rawtext = urldata.read().decode('utf-8', 'ignore')
 		soup = BeautifulSoup(rawtext, 'html.parser')
+
 
 	jobListings = soup.select(".result")
 	for job in jobListings:
@@ -30,6 +31,15 @@ def crawler_func(url):
 		jobTitle= job.select(".jobtitle")[0].text.lstrip().rstrip()
 		companyName = job.select(".company")[0].text.lstrip().rstrip()
 		jobLocation = job.select(".location")[0].text.lstrip().rstrip()
+		
+		# Figured out if this ad is sponsored.
+		isSponsered = ""
+		sponderedSpans = job.find_all("span")
+		if len(sponderedSpans) > 0:
+			for span in sponderedSpans:
+				spanText = span.text.lstrip().rstrip()
+				if re.match("Sponsored", spanText) is not None:
+					isSponsered = spanText
 
    #get job URL
 		all_jobs = job.find_all("a")
@@ -37,44 +47,47 @@ def crawler_func(url):
    			try:
    				if "turnstileLink" in link['class']:
    					jobURL = "https://www.indeed.com" + link['href']
+
    			except:
    				pass
 
 		try:
-   			
-   			p = document.add_paragraph()
-   			p.add_run(jobTitle).bold = True
-   			document.add_paragraph(companyName)
-   			document.add_paragraph(jobLocation)
-   			document.add_paragraph(jobURL)
-   			document.add_paragraph()
+			if (page < 10):
+   				if(isSponsered != "Sponsored"):
+   					p = document.add_paragraph()
+   					p.add_run(jobTitle).bold = True
+   					q = document.add_paragraph(companyName)
+   					q.add_run(" " + jobLocation)
+   					document.add_paragraph(jobURL)
+   					document.add_paragraph()
    			
 		except:
    			pass
-		document.save('job_listings.docx')
-	#hard coding a way to only read two pages worth of data, LOL
-	#if (count <= 1):
-	#	try:
-	#		page = 10
-	#		url = url + "&start=" + str(page)
-	#		print(url)
-	#		count+=1
-	#		crawler_func(url, count)
-			
-	#	except:
-	#		exit()
-	#next_link = soup.select(".pagination")[0].find_all('a')
-	#page = 0
-	#for link in next_link:
-   		#if re.match("Next", link.text) is not None:
-   			#print(link)
-   			#page+= 10
-   			#url = url + "&start=" + str(page)
-   			#print(url)
-   			#crawler_func(url)
-   			#print("hi")
-   		#else:
-   		#	exit()
+	document.save('job_listings.docx')
+	
+	if (page < 10):
+		document.add_paragraph("Here are some other jobs you should consider:")
+	relatedJobs = soup.select(".relatedQuerySpacing")
+	for related in relatedJobs:
+		all_related = related.find_all("a")
+		
+		for link in all_related:
+			try:
+				relatedURL = "https://www.indeed.com" + link['href']
+				document.add_paragraph(relatedURL)
+			except:
+				pass
+	document.save('job_listings.docx')
+	try:
+		next_link = soup.select(".pagination")[0].find_all('a')
+
+		for link in next_link:
+   			if re.match("Next", link.text) is not None:
+   				page += 10
+   				print(link['href'])
+   				crawler_func("https://www.indeed.com" + link['href'],page)
+	except:
+		pass
 
 def menu():
 	print("Hey fellow Employment Specialist! Welcome to the job scraper!")
@@ -83,7 +96,7 @@ def menu():
 		zipcode = 21218
 	job = input("Please input the type of job you're seeking.\nIf your input is more than one word, please separate spaces with + symbols, e.g. 'night+jobs'\n")
 	radius = input("Please input how far you can travel.\n If no preference, input 25.\n")
-	sortdate = input("Type 'y' if you'd like to sort by date.\n")
+	sortdate = input("Type 'y' if you'd like to sort by date or 'n' if not. Otherwise jobs will be sorted by relevance.\n")
 	if (sortdate=='y'):
 		url = "https://www.indeed.com/jobs?q=" + str(job) + "&l=" + str(zipcode) + "&radius=" + str(radius) + "&sort=date"
 	else: 
@@ -91,7 +104,8 @@ def menu():
 	#count = 1
 	print("Thanks! Starting search now...")
 	print(url)
-	crawler_func(url)
+	page = 0
+	crawler_func(url, page)
 	print("Jobs written to Word document. Thanks for using this service!")
 
 menu()
