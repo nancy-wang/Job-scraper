@@ -11,7 +11,7 @@ Currently must compile and run .py file to perform the job search.
 
 Dependencies
 --------------
-Python 3.5: These scripts were developed against Python 3.6.
+Python 3.6: These scripts were developed using Python 3.6.
 
 BeautifulSoup 4: You will need to install BeautifulSoup in order to run these libraries. This can be done through running "pip install beautifulsoup4" in the command line.
 
