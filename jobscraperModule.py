@@ -54,6 +54,7 @@ def crawler_func(url, page, jobsubj):
    				pass
 
 		try:
+			#currently only getting two pages of jobs for brevity
 			if (page < 10):
    				if(isSponsered != "Sponsored"):
    					p = document.add_paragraph()
@@ -68,7 +69,7 @@ def crawler_func(url, page, jobsubj):
 	document.save('job_listings_' + str(job_subj) + '.docx')
 	
 	if (page < 10):
-		document.add_paragraph("If applicable, other jobs you might want to consider are linked below.")
+		document.add_paragraph("If applicable, other jobs you might want to consider will show up below.")
 	relatedJobs = soup.select(".relatedQuerySpacing")
 	for related in relatedJobs:
 		all_related = related.find_all("a")
@@ -85,6 +86,7 @@ def crawler_func(url, page, jobsubj):
 
 		for link in next_link:
    			if re.match("Next", link.text) is not None:
+   				#goes through each page of jobs until it reaches the end
    				page += 10
    				print(link['href'])
    				crawler_func("https://www.indeed.com" + link['href'],page, jobsubj)
@@ -98,14 +100,14 @@ def menu():
 		zipcode = 21218
 	jobsubj = input("Please input the type of job you're seeking.\nIf your input is more than one word, please separate spaces with + symbols, e.g. 'night+jobs'\n")
 	radius = input("Please input how far you can travel.\n If no preference, input 25.\n")
-	sortdate = input("Type 'y' if you'd like to sort by date or 'n' if not. Otherwise jobs will be sorted by relevance.\n")
-	if (sortdate=='y'):
+	sortdate = input("Type 'd' if you'd like to sort by date or 'r' to be sorted by relevance.\n")
+	if (sortdate=='d'):
 		url = "https://www.indeed.com/jobs?q=" + str(jobsubj) + "&l=" + str(zipcode) + "&radius=" + str(radius) + "&sort=date"
 	else: 
 		url = "https://www.indeed.com/jobs?q=" + str(jobsubj) + "&l=" + str(zipcode) + "&radius=" + str(radius)
 	#count = 1
 	print("Thanks! Starting search now...")
-	print(url)
+	print("Crawling through" + " " + url)
 	page = 0
 	crawler_func(url, page, jobsubj)
 	print("Jobs written to Word document. Thanks for using this service!")
